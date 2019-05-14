@@ -3,14 +3,11 @@ import { Album, List, Position } from './albums'; // types
 import { ALBUMS, ALBUM_LISTS } from './mock-albums';
 
 import { Subject, Observable } from 'rxjs'; // librarie à parti intégrée dans Angular
-// Service et classe utile
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-// Opérateurs de RxJS
 import { map } from 'rxjs/operators';
-// libraire utile pour le traitement de données
 import * as _ from 'lodash';
-2
-// définition des headers
+
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json',
@@ -20,7 +17,6 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
-
 export class AlbumService {
 
   private _albums: Album[] = ALBUMS; // _ convention private et protected
@@ -30,34 +26,39 @@ export class AlbumService {
   private albumListsUrl = 'https://app-music-76220.firebaseio.com/albumLists';
 
   // Observer => next publication d'information et Observable d'attendre des informations et d'exécuter du code
-  sendCurrentNumberPage = new Subject<{ current: number, paginate: number }>();
-
+  sendCurrentNumberPage = new Subject<{ current: number, position: Position }>();
   subjectAlbum = new Subject<Album>();
+  buttonPlay = new Subject<boolean>();
 
+  // http ~ HttpClient service Angular pour faire du XMLHttpRequest version Framework
   constructor(private http: HttpClient) { }
 
-  getAlbums(order = (a, b) => b.duration - a.duration): Album[] {
-    return this._albums.sort(order);
-  }
-
-  getAlbums2(order = (a,b) => b.duration - a.duration) :Observable<Album[]> {
+  // RxJS ~ HttpClient
+  getAlbums(order = (a, b) => b.duration - a.duration): Observable<Album[]> {
 
     return this.http.get<Album[]>(this.albumsUrl + '/.json', httpOptions).pipe(
+
+      // 1./ Préparation des données avec _.values pour avoir un format exploitable dans l'application => Array de values JSON
+      // On pourra facilement itérer, pb surtout lorsqu'on insert de la data => Firebase crée un hash en clef
       map(albums => _.values(albums)),
+
+      // 2./ Ordonnez les albums par ordre de durées décroissantes
       map(albums => {
-        return this._albums.sort(
-          (a,b) => { return b.duration - a.duration}
+        return albums.sort(
+          (a, b) => { return b.duration - a.duration }
         );
       })
-    )
+    );
   }
 
-  getAlbum(id: string): Album {
-    return this._albums.find(list => list.id === id);
+  getAlbum(id: string, options = httpOptions): Observable<Album> {
+
+    return this.http.get<Album>(`${this.albumsUrl}/${id}/.json`, options);
   }
 
-  getAlbumList(id: string): List {
-    return this._albumList.find(l => l.id === id);
+  getAlbumList(id: string, options = httpOptions): Observable<List> {
+
+    return this.http.get<List>(`${this.albumListsUrl}/${id}/.json`, options);
   }
 
   count(): number {
@@ -65,39 +66,52 @@ export class AlbumService {
   }
 
   switchOn(album: Album): void {
-    //this.buttonPlay.next(true);
+    this.buttonPlay.next(false);
+    album.status = "on";
+   // const Album = { ...Album };
 
-    this.getAlbums().map(al => {
-      if (album.id === al.id) { al.status = 'on'; this.subjectAlbum.next(album); }
-      else al.status = 'off';
-    });
+    // this.getAlbums().map(al => {
+    //   if (album.id === al.id) { al.status = 'on'; this.subjectAlbum.next(album); }
+    //   else al.status = 'off';
+    // });
   }
 
-  switchOff(album: Album): void {
-    //this.buttonPlay.next(false);
-    this.getAlbums().map(al => {
-      al.status = 'off';
-    });
+  switchOff(album: Album, options = httpOptions): Observable<Album> {
+    this.buttonPlay.next(true);
+
+    album.status = 'off';
+
+    return this.http.put<Album>(`${this.albumListsUrl}/${album.id}/.json`, album, options)
   }
 
-  paginate(start: number, end: number): Album[] {
-    return this.getAlbums().slice(start, end);
+  paginate(start: number, end: number): Observable<Album[]> {
+
+    return this.http.get<Album[]>(this.albumsUrl + '/.json', httpOptions).pipe(
+      map(albums => _.values(albums)),
+      map(albums => albums.slice(start, end)),
+    );
   }
 
-  search(word: string | null): Album[] {
+  stop(album: Album) {
+  }
 
-    if (word == null) return this.getAlbums();
+  search(word: string | null): Observable<Album[]> {
 
-    let albums = [];
+    return this.http.get<Album[]>(this.albumsUrl + '/.json', httpOptions).pipe(
 
-    if (word.length > 3) {
+      map(albums => _.values(albums)),
 
-      this.getAlbums().forEach(album => {
-        if (album.title.includes(word)) albums.push(album);
-      });
-    }
+      map(albums => {
+        let Albums = [];
+        if (word.length > 3) {
+          albums.forEach(album => {
+            if (album.title.includes(word)) Albums.push(album);
+          })
+        }
 
-    return albums;
-  } 
+        return Albums;
+      })
+    );
+  }
 
 }
