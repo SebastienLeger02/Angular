@@ -13,6 +13,8 @@ import { AlbumDescriptionComponent } from './album-description/album-description
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PaginateComponent } from './paginate/paginate.component';
 import { AudioPlayerComponent } from './audio-player/audio-player.component';
+import * as firebase from '../environments/firebase';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { AudioPlayerComponent } from './audio-player/audio-player.component';
     AlbumDescriptionComponent,
     PageNotFoundComponent,
     PaginateComponent,
-    AudioPlayerComponent
+    AudioPlayerComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
