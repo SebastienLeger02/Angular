@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import firebase from '../environments/firebase';
 import { Router } from '@angular/router';
 
-
 @Injectable({
   providedIn: 'root'
 })

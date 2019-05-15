@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AlbumComponent } from './album/album.component';
+// partager components, services, directive et pipe
+import { ShareModule } from '../share/share.module';
 
 @NgModule({
   declarations: [AlbumComponent],
   imports: [
-    CommonModule
-  ]
+    ShareModule,
+  ],
+  // tous les components exportables à l'extérieur dans les autres modules
+  exports : [ AlbumComponent ] 
 })
 export class AdminModule { }

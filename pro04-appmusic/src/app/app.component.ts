@@ -13,7 +13,7 @@ export class AppComponent {
   count: Observable<number>;
   time: string;
 
-  constructor(public authS: AuthService) {
+  constructor(public authS : AuthService) {
     const interval$ = interval(1000);
 
     const counter = interval$.pipe(

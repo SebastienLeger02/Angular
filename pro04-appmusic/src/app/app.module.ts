@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module'; // plugin ou extension
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { AdminModule } from './admin/admin.module';
+import { ShareModule } from './share/share.module';
 
 import { AppComponent } from './app.component';
 import { AlbumsComponent } from './albums/albums.component';
@@ -11,9 +14,7 @@ import { SearchComponent } from './search/search.component';
 import { LoginComponent } from './login/login.component';
 import { AlbumDescriptionComponent } from './album-description/album-description.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { PaginateComponent } from './paginate/paginate.component';
 import { AudioPlayerComponent } from './audio-player/audio-player.component';
-import * as firebase from '../environments/firebase';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
@@ -25,7 +26,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     LoginComponent,
     AlbumDescriptionComponent,
     PageNotFoundComponent,
-    PaginateComponent,
     AudioPlayerComponent,
     DashboardComponent
   ],
@@ -33,7 +33,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
+    ShareModule,
+    AdminModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

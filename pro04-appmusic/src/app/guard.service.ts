@@ -8,19 +8,19 @@ import { AuthService } from './auth.service';
 export class GuardService implements CanActivate {
 
   constructor(
-    private authS: AuthService,
-    private router: Router
+    private authS : AuthService,
+    private router : Router
   ) { }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): any | boolean {
+  canActivate(route : ActivatedRouteSnapshot, state : RouterStateSnapshot): any | boolean{
 
     // pour vérifier si l'utilisateur est bien connecté ~ service authService ...
-    if (this.authS.authState === true) return true;
+    if(this.authS.authState === true) return true;
 
     // sinon une redirection
     this.router.navigate(
       ['/login'],
-      { queryParams: { messageError: 'Error authentification' } }
+      { queryParams : { messageError : 'Error authentification'}}
     );
   }
 }

@@ -41,7 +41,6 @@ export class AlbumDetailsComponent implements OnInit, OnChanges {
 
     this.aS.buttonPlay.subscribe(state => {
       this.isActive = state;
-      console.log(state)
     })
   }
 
@@ -55,9 +54,10 @@ export class AlbumDetailsComponent implements OnInit, OnChanges {
 
     // on vérifie que c'est != null
     if (this.album) {
-      const albumList = this.aS.getAlbumList(this.album.id);
+      this.aS.getAlbumList(this.album.id).subscribe(
+        list => this.songs = (list) ? list.list : []
+      );
 
-      if (albumList) this.songs = albumList.list;
       this.toggle();
     }
   }
@@ -66,13 +66,12 @@ export class AlbumDetailsComponent implements OnInit, OnChanges {
     this.onPlay.emit(album); // émettre un album vers le parent
   }
 
-  stop(album : Album){
-    this.aS.stop(album);
+  stop(album: Album) {
+  
   }
 
   toggle() {
     this.isOpen = false;
-
     const animate = setInterval(() => {
       this.isOpen = !this.isOpen;
       clearInterval(animate);
