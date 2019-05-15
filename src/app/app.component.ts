@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { interval, Observable } from 'rxjs';
 import { map } from 'rxjs/operators'; // opérateurs
+//import { AuthService } from './auth.service';
 
-@Component({
+/*@Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -12,7 +13,7 @@ export class AppComponent {
   count: Observable<number>;
   time: string;
 
-  constructor() {
+  constructor(public authS: AuthService) {
     const interval$ = interval(1000);
 
     const counter = interval$.pipe(
@@ -28,4 +29,4 @@ export class AppComponent {
       number => this.time = number
     );
   }
-}
+} */
