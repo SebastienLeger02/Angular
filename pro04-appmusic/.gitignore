@@ -45,8 +45,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-package-lock.json
+# configuration perso de dev
+src/environments/**
 
-# configuration perso
-/src/environments
-!/scr/environments/environment.ts
+# configuration
